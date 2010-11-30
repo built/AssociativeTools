@@ -1,0 +1,1 @@
+This is a library primarily containing a class called a Workspace, which is a data structure I'm calling an Associative Network. I created this in support of the implementation of the Wheeler programming language, but it seems useful outside of that context as well.
