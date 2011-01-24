@@ -3,15 +3,23 @@ import functools
 class NamedSet():
 	def __init__(self, name):
 		self.name = name
-		self.contents = set()
-	def add(self, *items):
-		[self.contents.add(each) for each in items]
+		self.contents = {}
+
+	# We're expecting to add other NamedSets, so are guaranteed
+	# a 'name' attribute.
+	def add(self, *named_sets):
+		for named_set in named_sets:
+			self.contents[named_set.name] = named_set
 	def __len__(self):
 		return len(self.contents)
-	def connect(self, item):
-		self.add(item)
-		item.add(self)
-
+	def connect(self, named_set):
+		self.contents[named_set.name] = named_set
+		named_set.contents[self.name] = self
+	def disconnect(self, named_set):
+		del self.contents[named_set.name]
+		del named_set.contents[self.name]
+	def __contains__(self, item):
+		return (item in self.contents)
 
 class Workspace:
 	def __init__(self):
@@ -54,11 +62,23 @@ class RelationalWorkspace(NamedSet):
 		self.counter += 1
 		return relation
 
-	def fetch_relatives(self, *items):
-		return reduce(lambda related, item: related & item.contents, items, self.contents)
+	def related(self, named_sets):
+		related = set()
+		for named_set in named_sets:
+			for val in named_set.contents.values():
+				related.add(val)
+		return related
+
+	def comprehend(self, *items):
+		given_items = self.lookup_existing_items_by_name(*items)
+		intersection = self.related(given_items) - set(given_items)
+		return [x for x in intersection] # TODO: native way to Set => [] ??
 
 	def names_to_items(self, *names):
-		return [item for item in self.contents if item.name in names]
+		return [item.name if isinstance(item, NamedSet) else NamedSet(item) for item in self]
+
+	def lookup_existing_items_by_name(self, *names):
+		return [self.contents[name] for name in names if name in self]
 
 	def associate(self, *items):
 		items = [NamedSet(item) for item in items]
@@ -67,11 +87,9 @@ class RelationalWorkspace(NamedSet):
 		[relation.connect(item) for item in items]
 
 	def disassociate(self, *items):
-		items = self.names_to_items(*items)
-		[related.contents.remove(item) for item in self.fetch_relatives(*items) for related in item.contents]
-
-	def comprehend(self, *items):
-		items = self.names_to_items(*items)
-		return set([match for relation in self.fetch_relatives(*items) for match in relation.contents]) - set(items)
+		for relation in self.comprehend(*items):
+			for item in self.lookup_existing_items_by_name(*items):
+				relation.disconnect(item)
+			self.disconnect(relation)
 
 
