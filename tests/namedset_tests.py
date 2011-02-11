@@ -27,5 +27,6 @@ class AssociativeSetTest(unittest.TestCase):
 		self.assertTrue("foo" in n, "Should see the named set")
 
 
+
 if __name__ == '__main__':
     unittest.main()

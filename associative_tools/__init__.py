@@ -25,9 +25,9 @@ class AssociativeSet():
 		return (item in self.contents)
 
 	def comprehend(self, *items):
-		given_items = self.lookup_existing_items_by_name(*items)
-		intersection = self.related(given_items) - set(given_items)
-		return [x for x in intersection] # TODO: native way to Set => [] ??
+		given_items = set(self.lookup_items_by_name(*items))
+		intersection = self.related(given_items) - given_items
+		return list(intersection)
 
 	def create_relation(self):
 		relation = AssociativeSet("__relation__%s" % self.counter)
@@ -35,59 +35,21 @@ class AssociativeSet():
 		self.counter += 1
 		return relation
 
-	def related(self, named_sets):
-		related = set()
-		for named_set in named_sets:
-			for val in named_set.contents.values():
-				related.add(val)
-		return related
+	def related(self, criteria):
+		if len(criteria) < 1: return set()
+		return set(each for each in self.contents.values() if criteria.issubset( each.contents.values() )   )
 
-	def names_to_items(self, *names):
-		return [item.name if isinstance(item, AssociativeSet) else AssociativeSet(item) for item in self]
-
-	def lookup_existing_items_by_name(self, *names):
-		return [self.contents[name] for name in names if name in self]
+	def lookup_items_by_name(self, *names):
+		return [self.contents[name] if name in self else AssociativeSet(name) for name in names]
 
 	def associate(self, *items):
-		items = [AssociativeSet(item) for item in items]
+		items = self.lookup_items_by_name(*items)
 		self.add(*items)
 		relation = self.create_relation()
 		[relation.connect(item) for item in items]
 
 	def disassociate(self, *items):
 		for relation in self.comprehend(*items):
-			for item in self.lookup_existing_items_by_name(*items):
+			for item in self.lookup_items_by_name(*items):
 				relation.disconnect(item)
 			self.disconnect(relation)
-
-
-class Workspace:
-	def __init__(self):
-		self.contents = {}
-
-	def associate(self, *items):
-		for item in items:
-			if item not in self.contents:
-				self.contents[item] = set()
-			self.contents[item].add(set([thing for thing in items if thing != item]))
-
-	def disassociate(self, *items):
-		for item in items:
-			for other in set(items) - set([item]):
-				self.contents[other].remove(item)
-
-	def comprehend(self, *items):
-		known = set()
-		for item in items:
-			if item in self.contents:
-				[known.add(x) for x in self.contents[item] ]
-		return known - set(items)
-
-	def dump(self):
-		print
-		print "--------------------------------------"
-		for key in self.contents.keys():
-			print "%s => %s" % (key, self.contents[key])
-		print "--------------------------------------"
-
-
