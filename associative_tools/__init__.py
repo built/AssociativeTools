@@ -29,8 +29,8 @@ class AssociativeSet():
 		intersection = self.related(given_items) - given_items
 		return list(intersection)
 
-	def create_relation(self):
-		relation = AssociativeSet("__relation__%s" % self.counter)
+	def create_relation(self, basename=None):
+		relation = AssociativeSet("__%s__%s" % (basename or "relation", self.counter) )
 		relation.connect(self)
 		self.counter += 1
 		return relation

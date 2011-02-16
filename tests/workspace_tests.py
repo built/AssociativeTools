@@ -51,6 +51,14 @@ class WorkspaceTest(unittest.TestCase):
 		w.associate("foo", "bar")
 		self.assertEqual(w.comprehend("bar", "blarf"), [], "Got back a result! Should have retrieved nothing.")
 
+	"""
+	Create a relation with a particular basename.
+ 	Useful when debugging a system.
+	"""
+	def test_create_special_relation(self):
+		w = AssociativeSet("*")
+		w.create_relation("foo")
+		self.assertTrue("__foo__0" in w.contents)
 
 
 if __name__ == '__main__':
