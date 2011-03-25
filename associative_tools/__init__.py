@@ -14,8 +14,8 @@ class AssociativeSet():
 		return len(self.contents)
 
 	def connect(self, named_set):
-		self.contents[named_set.name] = named_set
-		named_set.contents[self.name] = self
+		self.add(named_set)
+		named_set.add(self)
 
 	def disconnect(self, named_set):
 		del self.contents[named_set.name]
@@ -53,3 +53,6 @@ class AssociativeSet():
 			for item in self.lookup_items_by_name(*items):
 				relation.disconnect(item)
 			self.disconnect(relation)
+
+	def matches(self, possible_match):
+		return possible_match.name == self.name
