@@ -54,5 +54,15 @@ class AssociativeSet():
 				relation.disconnect(item)
 			self.disconnect(relation)
 
-	def matches(self, possible_match):
-		return possible_match.name == self.name
+	def matches(this_pattern, possible_match):
+		return possible_match.name == this_pattern.name
+
+	def describes(this_pattern, possible_match):
+		print "Pattern contents: %s" % this_pattern.contents.keys()
+		print "PossibleMatching contents: %s" % possible_match.contents.keys()
+		if len(this_pattern.contents) < 1 and len(possible_match.contents) > 0: return False
+
+
+		misses = [item for item in this_pattern.contents.values() if item.name not in possible_match.contents.keys()]
+		return len(misses) < 1
+
