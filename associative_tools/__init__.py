@@ -24,9 +24,16 @@ class AssociativeSet():
 	def __contains__(self, item):
 		return (item in self.contents)
 
-	def comprehend(self, *items):
-		given_items = set(self.lookup_items_by_name(*items))
-		intersection = self.related(given_items) - given_items
+	def comprehend(self, *item_names):
+		given = []
+		negated = []
+
+		for name in item_names:
+			negated.append(name[1:]) if name.startswith('!') else given.append(name)
+
+		negated_items = set(self.lookup_items_by_name(*negated))
+		given_items = set(self.lookup_items_by_name(*given))
+		intersection = self.related(given_items) - given_items - self.related(negated_items)
 		return list(intersection)
 
 	def create_relation(self, basename=None):

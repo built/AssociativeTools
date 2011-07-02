@@ -75,8 +75,17 @@ class AssociativeSetTest(unittest.TestCase):
 		self.assertEqual(w.comprehend("bar", "blarf"), [], "Got back a result! Should have retrieved nothing.")
 
 	"""
+	Should allow negated terms, to filter against things you *don't* want.
+	"""
+	def test_negation_in_comprehension(self):
+		w = AssociativeSet("*")
+		w.associate("foo", "bar", "bingo")
+		w.associate("foo", "bar", "baz")
+		self.assertEqual(len(w.comprehend("foo", "bar", "!baz")), 1, "Should get back only ONE result.")
+
+	"""
 	Create a relation with a particular basename.
- 	Useful when debugging a system.
+	 	Useful when debugging a system.
 	"""
 	def test_create_special_relation(self):
 		w = AssociativeSet("*")
