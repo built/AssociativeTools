@@ -1,4 +1,10 @@
 class FuzzyHash:
+	"""
+	FuzzyHash acts like a hashtable, except it lets you have "fuzzy" values for the keys.
+	More precisely, it lets you specify a range as the key when you create the hash entry,
+	and it lets you look that entry back up with any value that is in the range originally
+	specified.
+	"""
 	
 	# Challenges:
 	# performance

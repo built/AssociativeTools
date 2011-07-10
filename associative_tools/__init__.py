@@ -1,6 +1,16 @@
+"""
+Associative Tools is a small collection of classes created during the development of the Wheeler programming language.
+"""
+
 import functools
 
 class AssociativeSet():
+	"""
+	AssociativeSet is a hashed (associative) set that can contain other sets. It also provides tooling to create
+	relations between AssociativeSets, effectively letting you create arbitrary data structures (graphs) with sets.
+
+	Each AssociativeSet can serve as a context for creating and managing relationships among other sets.
+	"""
 	def __init__(self, name):
 		self.name = name
 		self.contents = {}
@@ -37,6 +47,15 @@ class AssociativeSet():
 		return list(intersection)
 
 	def create_relation(self, basename=None):
+		"""
+		Creates an AssociativeSet in the current context that is solely for the purpose of
+		describing a relationship between two other AssociativeSets.
+		Relations have a name automatically created for them, usually of the form:
+		__relation__0, where the number serves to uniquely identify the relation in the
+		given context. You can have the relations take on a slightly different form by
+		providing your own basename. For example, a basename of "category" would have a
+		name of the form __category__0.
+		"""
 		relation = AssociativeSet("__%s__%s" % (basename or "relation", self.counter) )
 		relation.connect(self)
 		self.counter += 1
@@ -50,12 +69,18 @@ class AssociativeSet():
 		return [self.contents[name] if name in self else AssociativeSet(name) for name in names]
 
 	def associate(self, *items):
+		"""
+		The star of the show. Associates all of the items given (usually strings).
+		"""
 		items = self.lookup_items_by_name(*items)
 		self.add(*items)
 		relation = self.create_relation()
 		[relation.connect(item) for item in items]
 
 	def disassociate(self, *items):
+		"""
+		Disconnects all relations between the items given (usually strings).
+		"""
 		for relation in self.comprehend(*items):
 			for item in self.lookup_items_by_name(*items):
 				relation.disconnect(item)
