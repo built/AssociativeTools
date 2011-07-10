@@ -35,6 +35,9 @@ class AssociativeSet():
 		return (item in self.contents)
 
 	def comprehend(self, *item_names):
+		"""
+		Returns any intersections between the given items. These intersections are often relations created by associate().
+		"""
 		given = []
 		negated = []
 
