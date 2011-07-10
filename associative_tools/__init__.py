@@ -90,8 +90,6 @@ class AssociativeSet():
 		return possible_match.name == this_pattern.name
 
 	def describes(this_pattern, possible_match):
-		print "Pattern contents: %s" % this_pattern.contents.keys()
-		print "PossibleMatching contents: %s" % possible_match.contents.keys()
 		if len(this_pattern.contents) < 1 and len(possible_match.contents) > 0: return False
 
 
