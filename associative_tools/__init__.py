@@ -66,7 +66,7 @@ class AssociativeSet():
 
 	def related(self, criteria):
 		if len(criteria) < 1: return set()
-		return set(each for each in self.contents.values() if criteria.issubset( each.contents.values() )   )
+		return set(peer for peer in self.contents.values() if criteria.issubset( peer.contents.values() )   )
 
 	def lookup_items_by_name(self, *names):
 		return [self.contents[name] if name in self else AssociativeSet(name) for name in names]
