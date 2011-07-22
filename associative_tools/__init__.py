@@ -99,3 +99,6 @@ class AssociativeSet():
 		misses = [item for item in this_pattern.contents.values() if item.name not in possible_match.contents.keys()]
 		return len(misses) < 1
 
+	def list_terms(self):
+		return self.contents.keys()
+	terms = property(list_terms)
