@@ -18,7 +18,7 @@ In a very abstract sense this class lets you connect ideas together. It creates 
 ### FuzzyHash
 It's a hashtable whose keys are ranges. If you supply an index that falls within a particular key's range, you get that corresponding value back.
 
-To get a real sense of how this works in practice and when you'd want this, see `fuzzy_exammple.py`.
+To get a real sense of how this works in practice and when you'd want this, see `fuzzy_example.py`.
 
 
 

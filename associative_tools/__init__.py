@@ -47,7 +47,7 @@ class AssociativeSet():
 		negated_items = set(self.lookup_items_by_name(*negated))
 		given_items = set(self.lookup_items_by_name(*given))
 		intersection = self.related(given_items) - given_items - self.related(negated_items)
-		return list(intersection)
+		return list(intersection)  # a list, not a set?
 
 	def create_relation(self, basename=None):
 		"""
