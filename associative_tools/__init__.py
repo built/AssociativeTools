@@ -65,8 +65,13 @@ class AssociativeSet():
 		return relation
 
 	def related(self, criteria):
-		if len(criteria) < 1: return set()
-		return set.intersection(*[set(c.contents.values()) for c in criteria]) - set([self])
+		"""
+		Given two or more AssociativeSets, finds and returns their common relatives.
+		"""
+		if not criteria: return set()
+
+		potentially_common_relatives = [set(c.contents.values()) for c in criteria]
+		return set.intersection(*potentially_common_relatives) - set([self])
 
 	def lookup_items_by_name(self, *names):
 		return [self.contents[name] if name in self else AssociativeSet(name) for name in names]
@@ -90,10 +95,14 @@ class AssociativeSet():
 			self.disconnect(relation)
 
 	def matches(this_pattern, possible_match):
+		"""
+		Determines if two AssociativeSets have matching names. (Why?)
+		"""
 		return possible_match.name == this_pattern.name
 
 	def describes(this_pattern, possible_match):
-		if len(this_pattern.contents) < 1 and len(possible_match.contents) > 0: return False
+		# If this pattern is empty but the possible match isn't, a description isn't possible.
+		if possible_match.contents and not this_pattern.contents: return False
 
 
 		misses = [item for item in this_pattern.contents.values() if item.name not in possible_match.contents.keys()]
@@ -102,3 +111,18 @@ class AssociativeSet():
 	def list_terms(self):
 		return self.contents.keys()
 	terms = property(list_terms)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
